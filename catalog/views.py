@@ -4,7 +4,8 @@ from rest_framework.response import Response
 from rest_framework.permissions import IsAuthenticated
 from django.shortcuts import get_object_or_404
 from django.http import FileResponse
-from .models import Item, OrderItem, Order
+from .models import Item
+from orders.models import OrderItem, Order
 
 class DigitalDownloadView(APIView):
     permission_classes = [IsAuthenticated]

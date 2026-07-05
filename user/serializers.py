@@ -153,10 +153,10 @@ class RequestOTPSerializer(serializers.Serializer):
     phone_number = PhoneNumberField()
  
     def validate_phone_number(self, value):
-        phone = str(value)  # e.g. '+989123456789'
+        phone_number = str(value)  # e.g. '+989123456789'
  
         # Throttle: one OTP request per OTP_THROTTLE_SECONDS
-        if cache.get(_throttle_key(phone)):
+        if cache.get(_throttle_key(phone_number)):
             raise serializers.ValidationError(
                 f"لطفاً {OTP_THROTTLE_SECONDS} ثانیه صبر کنید و دوباره امتحان کنید."
             )
@@ -201,16 +201,6 @@ class VerifyOTPSerializer(serializers.Serializer):
         return attrs
  
  
-# ─────────────────────────────────────────────────────────
-#  Shared response serializer
-# ─────────────────────────────────────────────────────────
- 
-class UserSerializer(serializers.ModelSerializer):
-    class Meta:
-        model  = User
-        fields = ["id", "username", "phone_number", "is_verified", "gender"]
-        read_only_fields = fields
-
 
 
 #─────────────────────────────────────────────────

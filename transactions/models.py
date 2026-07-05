@@ -1,5 +1,5 @@
 from django.db import models
-from virtualShop.orders.models import Order
+from orders.models import Order
 
 
 

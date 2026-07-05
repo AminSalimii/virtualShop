@@ -1,5 +1,5 @@
 from rest_framework.views import APIView
-from virtualShop.orders.models import Order
+from orders.models import Order
 from rest_framework.permissions import AllowAny, IsAuthenticated
 from rest_framework.response import Response
 from django.shortcuts import get_object_or_404, redirect
@@ -7,7 +7,7 @@ from django.conf import settings
 from django.utils import timezone
 import requests
 from .models import Transaction
-
+from .tasks import process_successful_order
 
 
 

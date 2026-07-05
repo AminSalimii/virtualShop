@@ -41,6 +41,7 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'user',
+    'orders',
     'catalog',
     'transactions',
     'rest_framework',
@@ -104,7 +105,7 @@ REST_FRAMEWORK = {
     ]
 }
 
-SIMPLE_JWP = {
+SIMPLE_JWT = {
     "AUTH_HEADER_TYPES": ["Bearer"],
     "ACCESS_TOKEN_LIFETIME": datetime.timedelta(minutes=30),
     "REFRESH_TOKEN_LIFETIME": datetime.timedelta(minutes=100),  
@@ -187,10 +188,15 @@ CACHES = {
 }
 
 KAVENEGAR_API_KEY      = os.environ.get("KAVENEGAR_API_KEY")
-KAVENEGAR_OTP_TEMPLATE = os.environ.get("KAVENEGAR_OTP_TEMPLAT")              # lookup template in Kavenegar panel
+KAVENEGAR_OTP_TEMPLATE = os.environ.get("KAVENEGAR_OTP_TEMPLATE")              # lookup template in Kavenegar panel
 KAVENEGAR_TIMEOUT      = 20                                                   # HTTP timeout in seconds
- 
+KAVENEGAR_SMS_SENDER   = os.environ.get("KAVENEGAR_SMS_SENDER")  # e.g. '10008663' — set in Kavenegar panel
 
 OTP_EXPIRY_SECONDS          = 120   # 2 min — OTP valid window
 OTP_THROTTLE_SECONDS        = 60    # 1 min — between OTP requests
 PHONE_CHANGE_SESSION_SECONDS = 300  # 5 min — to complete the 3-step phone flow
+
+ZARINPAL_MERCHANT_ID  = os.environ.get("ZARINPAL_MERCHANT_ID")
+ZARINPAL_CALLBACK_URL  = os.environ.get("ZARINPAL_CALLBACK_URL")
+FRONTEND_PAYMENT_SUCCESS_URL  = os.environ.get("FRONTEND_PAYMENT_SUCCESS_URL")
+FRONTEND_PAYMENT_FAILED_URL  = os.environ.get("FRONTEND_PAYMENT_FAILED_URL")

@@ -179,18 +179,18 @@ class RequestOTPView(APIView):
     def post(self, request, *args, **kwargs):
         serializer = RequestOTPSerializer(data=request.data)
         serializer.is_valid(raise_exception=True)
-        phone = serializer.validated_data["phone"]
+        phone_number = serializer.validated_data["phone_number"]
 
         otp = _generate_otp()
         ttl = getattr(settings, "OTP_EXPIRY_SECONDS", 120)  # default: 2 minutes
 
         # Store OTP in Redis with TTL — auto-expires, no manual cleanup needed
-        cache.set(f"{OTP_KEY_PREFIX}{phone}", otp, timeout=ttl)
+        cache.set(f"{OTP_KEY_PREFIX}{phone_number}", otp, timeout=ttl)
 
         # Dispatch SMS task asynchronously via RabbitMQ → Celery worker
-        send_otp_sms.delay(phone, otp)
+        send_otp_sms.delay(phone_number, otp)
 
-        logger.info("OTP queued for %s (TTL=%ds)", phone, ttl)
+        logger.info("OTP queued for %s (TTL=%ds)", phone_number, ttl)
 
         return Response(
             {"detail": "OTP sent successfully."},
@@ -235,7 +235,7 @@ class VerifyOTPView(APIView):
                 "access":  str(refresh.access_token),
                 "user": {
                     "id":    user.pk,
-                    "phone": user.phone,
+                    "phone": user.phone_number,
                 },
             },
             status=status.HTTP_200_OK,

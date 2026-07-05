@@ -14,7 +14,6 @@ from kavenegar import KavenegarAPI, APIException, HTTPException
 
 from celery import shared_task
 
-from virtualShop import orders
 
 logger = logging.getLogger(__name__)
 

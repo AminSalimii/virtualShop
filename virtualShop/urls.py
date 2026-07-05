@@ -23,6 +23,7 @@ urlpatterns = [
     path('user/',include('user.urls')),
     path('catalog/',include('catalog.urls')),
     path('transactions/',include('transactions.urls')),
+    path('orders/',include('orders.urls')),
 ]
 if settings.DEBUG:
     urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

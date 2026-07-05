@@ -17,7 +17,7 @@ from celery import shared_task
 from django.conf import settings
 from django.utils import timezone
 from kavenegar import KavenegarAPI, APIException, HTTPException
-from virtualShop.catalog.task import generate_digital_delivery  
+from virtualShop.catalog.tasks import generate_digital_delivery  
 
 logger = logging.getLogger(__name__)
 
@@ -55,7 +55,7 @@ def send_sms_notification(self, phone: str, message: str) -> dict:
         params = {
             "receptor": phone,
             "message":  message,
-            "sender":   settings.KAVENEGAR_SMS_SENDER,   # set in settings, e.g. '10008663'
+            "sender":   settings.KAVENEGAR_SMS_SENDER,   
         }
         response = api.sms_send(params)
         logger.info("SMS sent to %s | Response: %s", phone, response)
