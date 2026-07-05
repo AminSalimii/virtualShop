@@ -16,3 +16,12 @@ class User(AbstractUser):
         if self.username:
             return self.username
         return f"{self.id}"
+
+class Address(models.Model):
+    user         = models.ForeignKey(User, on_delete=models.CASCADE, related_name="addresses")
+    full_name    = models.CharField(max_length=100)
+    province     = models.CharField(max_length=50)
+    city         = models.CharField(max_length=50)
+    postal_code  = models.CharField(max_length=10)
+    address_line = models.TextField()
+    is_default   = models.BooleanField(default=False)

@@ -44,6 +44,7 @@ ENV/
 db.sqlite3
 db.sqlite3-journal
 /media/
+/protected_media/
 /staticfiles/
 /static_root/
 

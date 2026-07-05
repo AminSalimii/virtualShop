@@ -14,6 +14,8 @@ from kavenegar import KavenegarAPI, APIException, HTTPException
 
 from celery import shared_task
 
+from virtualShop import orders
+
 logger = logging.getLogger(__name__)
 
 OTP_KEY_PREFIX = "otp:"  # matches the prefix used in views.py
@@ -84,12 +86,12 @@ def log_active_otp_count() -> int:
     Replace the logger call with a metrics push (Prometheus, Datadog, etc.)
     if you need dashboards or alerts.
     """
-    from django_redis import get_redis_connection  # pip install django-redis
+    from django_redis import get_redis_connection  
 
     redis_client = get_redis_connection("default")
     pattern = f"{OTP_KEY_PREFIX}*"
 
-    # SCAN is non-blocking; safe for production Redis
+  
     count = sum(1 for _ in redis_client.scan_iter(pattern))
     logger.info("[Beat] Active OTP keys in Redis: %d", count)
     return count

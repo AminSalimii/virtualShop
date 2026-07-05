@@ -13,7 +13,7 @@ https://docs.djangoproject.com/en/6.0/ref/settings/
 from pathlib import Path
 import datetime
 
-# Build paths inside the project like this: BASE_DIR / 'subdir'.
+# Build paths inside the project like thiE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
 from dotenv import load_dotenv
@@ -41,6 +41,8 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'user',
+    'catalog',
+    'transactions',
     'rest_framework',
     'rest_framework_simplejwt',
     'phonenumber_field',
@@ -130,6 +132,18 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 
+STATIC_URL  = "/static/"
+STATIC_ROOT = BASE_DIR / "staticfiles"        # collectstatic dumps here for production
+STATICFILES_DIRS = [BASE_DIR / "static"]       # your own project-level static source, if any
+
+# Media — public uploads (product photos)
+MEDIA_URL  = "/media/"
+MEDIA_ROOT = BASE_DIR / "media"
+
+
+
+# Protected media — digital products, NEVER exposed via a public URL
+PROTECTED_MEDIA_ROOT = BASE_DIR / "protected_media"
 
 # Internationalization
 # https://docs.djangoproject.com/en/6.0/topics/i18n/
