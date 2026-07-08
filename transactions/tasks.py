@@ -5,11 +5,10 @@ Tasks
 -----
 send_sms_notification       Sends a plain-text SMS via Kavenegar (NOT for OTPs)
 process_successful_order    Post-payment fulfillment: digital unlock + physical flag + SMS receipt
-send_otp_sms                Sends OTP code via Kavenegar verify_lookup template (from otp_auth)
 
-Note: send_otp_sms lives in otp_auth/tasks.py and is imported here for clarity.
-      This file defines its own send_sms_notification for non-OTP messages
-      (receipts, shipping updates) because those use a different Kavenegar template.
+Note: OTP sending (send_otp_sms) lives in user/tasks.py — this file defines its
+      own send_sms_notification for non-OTP messages (receipts, shipping updates)
+      because those use a different Kavenegar template.
 """
 
 import logging
@@ -17,7 +16,7 @@ from celery import shared_task
 from django.conf import settings
 from django.utils import timezone
 from kavenegar import KavenegarAPI, APIException, HTTPException
-from virtualShop.catalog.tasks import generate_digital_delivery  
+from catalog.tasks import generate_digital_delivery
 
 logger = logging.getLogger(__name__)
 
@@ -51,11 +50,11 @@ def send_sms_notification(self, phone: str, message: str) -> dict:
     dict  Kavenegar response payload
     """
     try:
-        api = KavenegarAPI(settings.KAVENEGAR_API_KEY, timeout=settings.KAVENEGAR_TIMEOUT)
+        api = KavenegarAPI(settings.KAVENEGAR_API_KEY)
         params = {
             "receptor": phone,
             "message":  message,
-            "sender":   settings.KAVENEGAR_SMS_SENDER,   
+            "sender":   settings.KAVENEGAR_SMS_SENDER,   # set in settings, e.g. '10008663'
         }
         response = api.sms_send(params)
         logger.info("SMS sent to %s | Response: %s", phone, response)
@@ -127,7 +126,7 @@ def process_successful_order(self, order_id: int) -> dict:
 
             elif order_item.item_type == Item.PHYSICAL:
                 # Mark ready for admin to ship
-                order_item.status = OrderItem.READY_TO_SHIP
+                order_item.status = OrderItem.PROCESSING
                 order_item.save(update_fields=["status"])
                 physical_count += 1
 

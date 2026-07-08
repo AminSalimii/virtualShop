@@ -152,7 +152,7 @@ class OrderItemSerializer(serializers.ModelSerializer):
     def get_download_url(self, obj):
         if obj.item_type != Item.DIGITAL:
             return None
-        if obj.order.status not in (Order.PAID,Order.SHIPPED, Order.DELIVERED):
+        if obj.order.status not in (Order.PAID,Order.SHIPPED,Order.PROCESSING, Order.DELIVERED):
             return None
         try:
             url = reverse("order-item-download", args=[obj.id])
@@ -190,14 +190,22 @@ class OrderCreateSerializer(serializers.Serializer):
     """
 
     shipping_address_id = serializers.PrimaryKeyRelatedField(
-        queryset=Address.objects.all()
-    )
+    queryset=Address.objects.all(), required=False, allow_null=True
+)
 
     def validate(self, attrs):
         request = self.context["request"]
         cart = getattr(request.user, "cart", None)
         if cart is None or not cart.items.exists():
             raise serializers.ValidationError("Your cart is empty.")
+
+        address = attrs.get("shipping_address_id")
+        needs_shipping = cart.items.filter(item__item_type=Item.PHYSICAL).exists()
+        if needs_shipping and address is None:
+            raise serializers.ValidationError(
+                {"shipping_address_id": "A shipping address is required for physical items in your cart."}
+            )
+
         attrs["cart"] = cart
         return attrs
 
@@ -245,9 +253,10 @@ class OrderCreateSerializer(serializers.Serializer):
 
             order = Order.objects.create(
                 user=request.user,
+                status=Order.AWAITING_PAYMENT,
                 shipping_address=address,
                 total_amount=total,
-            )
+                )
             for oi in order_items:
                 oi.order = order
             OrderItem.objects.bulk_create(order_items)
