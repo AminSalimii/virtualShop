@@ -3,7 +3,7 @@ import string
 import logging
 from django.conf import settings
 from rest_framework import status
-from .otp_sms import send_otp_sms
+from .tasks import send_otp_sms
 from django.core.cache import cache
 from rest_framework.views import APIView
 from rest_framework.response import Response
@@ -69,7 +69,7 @@ class RegisterView(APIView):
  
         # Automatically kick off OTP so the user doesn't need a second request
         from django.core.cache import cache
-        from .otp_sms import send_otp_sms
+        from .tasks import send_otp_sms
         from .serializers import _otp_key, _throttle_key
         from django.conf import settings
         import random, string

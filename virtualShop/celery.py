@@ -9,11 +9,11 @@ import os
 from celery import Celery
 from celery.schedules import crontab
  
-os.environ.setdefault("DJANGO_SETTINGS_MODULE", 'virtualShop.settings')  # ← change 'config' to your project name
+os.environ.setdefault("DJANGO_SETTINGS_MODULE", 'virtualShop.settings')  
  
-app = Celery("config")  # ← change 'config' to your project name
+app = Celery("virtualShop")  
  
-# Pull CELERY_* keys from Django settings
+
 app.config_from_object("django.conf:settings", namespace="CELERY")
  
 # Auto-discover tasks.py in every INSTALLED_APP

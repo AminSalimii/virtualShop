@@ -18,10 +18,17 @@ class User(AbstractUser):
         return f"{self.id}"
 
 class Address(models.Model):
-    user         = models.ForeignKey(User, on_delete=models.CASCADE, related_name="addresses")
-    full_name    = models.CharField(max_length=100)
-    province     = models.CharField(max_length=50)
-    city         = models.CharField(max_length=50)
-    postal_code  = models.CharField(max_length=10)
-    address_line = models.TextField()
+    user         = models.ForeignKey(User, on_delete=models.CASCADE, related_name="addresses", verbose_name="کاربر")
+    first_name   = models.CharField(max_length=100, verbose_name="نام")
+    last_name    = models.CharField(max_length=100, verbose_name="نام خانوادگی")
+    province     = models.CharField(max_length=50, verbose_name="استان")
+    city         = models.CharField(max_length=50, verbose_name="شهر")
+    postal_code  = models.CharField(max_length=10, verbose_name="کد پستی")
+    address_line = models.TextField(verbose_name="آدرس")
     is_default   = models.BooleanField(default=False)
+    @property
+    def full_name(self):
+        return f"{self.first_name} {self.last_name}".strip()
+    class Meta:
+        verbose_name = "آدرس"
+        verbose_name_plural = "آدرس‌ها"
